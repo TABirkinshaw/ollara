@@ -4,11 +4,8 @@ using System.Text;
 
 namespace Ollara
 {
-    class Unit
+    enum Background
     {
-        public Unit(String newName)
-        {
-            
-        }
+
     }
 }

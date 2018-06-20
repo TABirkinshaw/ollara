@@ -4,8 +4,11 @@ using System.Text;
 
 namespace Ollara
 {
-    class Unit
+    class BaseUnit
     {
-
+        public BaseUnit(String newName)
+        {
+            
+        }
     }
 }
