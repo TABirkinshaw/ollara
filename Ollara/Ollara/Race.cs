@@ -6,6 +6,8 @@ namespace Ollara
 {
     enum Race
     {
-
+        Human,
+        Elf,
+        Dwarf,
     }
 }

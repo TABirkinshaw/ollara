@@ -6,6 +6,7 @@ namespace Ollara
 {
     enum Background
     {
-
+        Adventurer,
+        Soldier,
     }
 }
