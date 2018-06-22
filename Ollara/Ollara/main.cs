@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ollara
 {
@@ -31,9 +32,11 @@ namespace Ollara
                 {
                     case "1":
                         Console.WriteLine("Starting new game!");
+                        PlayGame();
                         break;
                     case "2":
                         Console.WriteLine("Continuing current game!");
+                        PlayGame("savefile.txt");
                         break;
                     case "3":
                         Console.WriteLine("Printing past game records.");
@@ -46,6 +49,24 @@ namespace Ollara
                         break;
                 }
             } while (!selected);
+        }
+
+        static void PlayGame(String entry = "")
+        {
+            List<Character> party = new List<Character>();
+            // List<RoomEntity> room = new List<RoomEntity>();
+            if (entry.CompareTo("") == 0)
+            {
+                Console.WriteLine("Creating save file \'savefile.txt\'.");
+                // Create save file
+                // Fill game values
+            }
+            else
+            {
+                Console.WriteLine("Loading save file \'{0}\'.", entry);
+                // Load save file
+                // File game values
+            }
         }
     }
 }

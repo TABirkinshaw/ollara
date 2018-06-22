@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Ollara
 {
-    class BaseUnit
+    class Character : BaseUnit
     {
-        public BaseUnit(String name)
+        public Character(String name, Background background)
         {
-            
+
         }
     }
 }
