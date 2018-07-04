@@ -15,6 +15,7 @@ namespace Ollara
 
         private Background background;
         private Armour armour;
+        private List<Passive> passiveList;
         private float might;
         private float finesse;
         private float astra;
@@ -25,15 +26,8 @@ namespace Ollara
         private float contempt;
         private Party party;
 
-        public override String Name
-        {
-            get { return name; }
-        }
-
-        public override Race Race
-        {
-            get { return race; }
-        }
+        public override String Name { get { return name; } }
+        public override Race Race { get { return race; } }
 
         public override float Health
         {
@@ -65,15 +59,19 @@ namespace Ollara
             set { weapon = value; }
         }
 
-        public Background Background
-        {
-            get { return background; }
-        }
+        public Background Background { get { return background; } }
 
         public Armour Armour
         {
             get { return armour; }
             set { armour = value; }
+        }
+
+        public List<Passive> PassiveList { get { return passiveList; } }
+
+        public void AddPassive(Passive passive)
+        {
+            passiveList.Add(passive);
         }
 
         public float Might
@@ -124,10 +122,13 @@ namespace Ollara
             set { contempt = value; }
         }
 
-        public override List<Ability> AbilityList
+        public Party Party
         {
-            get { return abilityList; }
+            get { return party; }
+            set { party = value; }
         }
+
+        public override List<Ability> AbilityList { get { return AbilityList; } }
 
         public override void AddAbility(Ability ability)
         {

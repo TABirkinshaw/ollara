@@ -8,25 +8,26 @@ namespace Ollara
 {
     class main
     {
+        // Local Database
         static List<Race> races = new List<Race>();
         static List<Background> backgrounds = new List<Background>();
         static Party party;
+        static List<Ability> abilities = new List<Ability>();
+        static List<Passive> passives = new List<Passive>();
+        static List<StatBoost> statBoosts = new List<StatBoost>();
 
         static void Main(string[] args)
         {
-            // Load game values
             Preload();
-
             MainMenu();
-
-            // Keep everything open for debugging
-            // Console.WriteLine("Press any key to exit.");
-            Console.ReadKey();
         }
 
+        /// <summary>
+        /// Preoads all the Databases into each static List to fill data for Race, Background, and Perk information.
+        /// </summary>
         static void Preload()
         {
-            XmlReader reader = XmlReader.Create("C:/users/Tristan.Birkinshaw/source/repos/ollara/Ollara/Ollara/Races.xml");
+            XmlReader reader = XmlReader.Create("C:/users/Tristan.Birkinshaw/source/repos/ollara/Ollara/Ollara/Data.xml");
             while (reader.Read())
             {
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Race"))
@@ -37,10 +38,6 @@ namespace Ollara
                         races.Add(new Race(reader.GetAttribute("name"), reader.GetAttribute("denonym"), attributes, reader.GetAttribute("description")));
                     }
                 }
-            }
-            reader = XmlReader.Create("C:/users/Tristan.Birkinshaw/source/repos/ollara/Ollara/Ollara/Backgrounds.xml");
-            while (reader.Read())
-            {
                 if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Background"))
                 {
                     if (reader.HasAttributes)
@@ -49,16 +46,65 @@ namespace Ollara
                         backgrounds.Add(new Background(reader.GetAttribute("name"), attributes, reader.GetAttribute("description")));
                     }
                 }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Ability"))
+                {
+                    if (reader.HasAttributes)
+                    {
+                        abilities.Add(new Ability(reader.GetAttribute("name"), float.Parse(reader.GetAttribute("power")), float.Parse(reader.GetAttribute("accuracy")), float.Parse(reader.GetAttribute("cost")), reader.GetAttribute("description")));
+                    }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "Passive"))
+                {
+                    if (reader.HasAttributes)
+                    {
+                        passives.Add(new Passive(reader.GetAttribute("name"), (Effect)Enum.Parse(typeof(Effect), reader.GetAttribute("effect")), reader.GetAttribute("description")));
+                    }
+                }
+                if ((reader.NodeType == XmlNodeType.Element) && (reader.Name == "StatBoost"))
+                {
+                    if (reader.HasAttributes)
+                    {
+                        statBoosts.Add(new StatBoost(reader.GetAttribute("name"), (Stat)Enum.Parse(typeof(Stat), reader.GetAttribute("stat")), float.Parse(reader.GetAttribute("amount")), reader.GetAttribute("description")));
+                    }
+                }
+            }
+            // Debug
+            Console.WriteLine("Checking Races...");
+            foreach (Race race in races)
+            {
+                Console.WriteLine("{0} ({1}): HP:{2} EN:{3} MI:{4} FI:{5} AS:{6} AG:{7} TO:{8} AC:{9} EM:{10} CO:{11} {12}", race.Name, race.Denonym, race.Health, race.Energy, race.Might, race.Finesse, race.Astra, race.Agility, race.Toughness, race.Acuity, race.Empathy, race.Contempt, race.Description);
+            }
+            Console.WriteLine("\nChecking Backgrounds...");
+            foreach (Background background in backgrounds)
+            {
+                Console.WriteLine("{0}: HP:{1} EN:{2} MI:{3} FI:{4} AS:{5} AG:{6} TO:{7} AC:{8} EM:{9} CO:{10} {11}", background.Name, background.Health, background.Energy, background.Might, background.Finesse, background.Astra, background.Agility, background.Toughness, background.Acuity, background.Empathy, background.Contempt, background.Description);
+            }
+            Console.WriteLine("\nChecking Abilities...");
+            foreach (Ability ability in abilities)
+            {
+                Console.WriteLine("{0}: POW:{1} ACC:{2} COST:{3} {4}", ability.Name, ability.Power, ability.Accuracy, ability.Cost, ability.Description);
+            }
+            Console.WriteLine("\nChecking Passives...");
+            foreach (Passive passive in passives)
+            {
+                Console.WriteLine("{0} ({1}) {2}", passive.Name, passive.Effect, passive.Description);
+            }
+            Console.WriteLine("\nChecking Stat Boosts...");
+            foreach (StatBoost statBoost in statBoosts)
+            {
+                Console.WriteLine("{0} ({1}+{2}) {3}", statBoost.Name, statBoost.Stat, statBoost.Amount, statBoost.Description);
             }
         }
 
+        /// <summary>
+        /// Displays the Main Menu and acts as a gateway for PlayGame()
+        /// </summary>
         static void MainMenu()
         {
             Console.WriteLine("Welcome to Ollara!");
-            bool selected = true;
+            bool exited = false;
             do
             {
-                selected = true;
                 Console.WriteLine("[1]  New Game");
                 Console.WriteLine("[2]  Continue");
                 Console.WriteLine("[3]  Past Games");
@@ -80,27 +126,31 @@ namespace Ollara
                         Console.WriteLine("Printing past game records.");
                         break;
                     case "X":
+                        exited = true;
                         break;
                     case "x":
+                        exited = true;
                         break;
                     default:
                         Console.WriteLine("Incorrect input");
-                        selected = false;
                         break;
                 }
-            } while (!selected);
+            } while (!exited);
         }
 
+        /// <summary>
+        /// Initialises (or loads) the game state and starts character generation before starting the Game.
+        /// </summary>
+        /// <param name="entry">An optional parameter that can take a save file if loading gets implemented.</param>
         static void PlayGame(String entry = "")
         {
-            List<Character> party = new List<Character>();
-            // List<RoomEntity> room = new List<RoomEntity>();
             if (entry.CompareTo("") == 0)
             {
                 Console.WriteLine("Creating save file \'savefile.txt\'.");
                 // Create save file
                 // Fill game values
                 CharacterCreator();
+                PerkPoolDistributor();
                 Game();
             }
             else
@@ -111,6 +161,9 @@ namespace Ollara
             }
         }
 
+        /// <summary>
+        /// Allows the player to generate their first character, and then up to 4 additional characters.
+        /// </summary>
         static void CharacterCreator()
         {
             Console.WriteLine("Welcome to the Character Creator.");
@@ -123,32 +176,32 @@ namespace Ollara
             bool raceIsValid = false;
             bool backgroundIsValid = false;
             bool finishedIsValid = false;
-            String name;
-            String race;
+            String nameIn;
+            String raceIn;
             Race blankRace = new Race("", "", new float[10], "");
             Race newRace = blankRace;
-            String background;
+            String backgroundIn;
             Background blankBackground = new Background("blank", new float[10], "blank");
             Background newBackground = blankBackground;
             do
             {
                 Console.Write("Please enter a name: ");
-                name = Console.ReadLine();
+                nameIn = Console.ReadLine();
                 do
                 {
                     Console.WriteLine("Please select a race from:");
-                    for (int i = 0; i < races.Count; i++)
+                    foreach (Race race in races)
                     {
-                        Console.WriteLine("{0}: HP:{1} EN:{2} MI:{3} FI:{4} AS:{5} AG:{6} TO:{7} AC:{8} EM:{9} CO:{10} {11}", races[i].Name, races[i].Health, races[i].Energy, races[i].Might, races[i].Finesse, races[i].Astra, races[i].Agility, races[i].Toughness, races[i].Acuity, races[i].Empathy, races[i].Contempt, races[i].Description);
+                        Console.WriteLine("{0}: HP:{1} EN:{2} MI:{3} FI:{4} AS:{5} AG:{6} TO:{7} AC:{8} EM:{9} CO:{10} {11}", race.Name, race.Health, race.Energy, race.Might, race.Finesse, race.Astra, race.Agility, race.Toughness, race.Acuity, race.Empathy, race.Contempt, race.Description);
                     }
                     Console.Write(" > ");
-                    race = Console.ReadLine();
+                    raceIn = Console.ReadLine();
                     String[] raceNames = new String[races.Count];
                     for (int i = 0; i < races.Count; i++)
                     {
                         raceNames[i] = races[i].Name;
                     }
-                    if (raceNames.Contains(race))
+                    if (raceNames.Contains(raceIn))
                     {
                         raceIsValid = true;
                     }
@@ -160,18 +213,18 @@ namespace Ollara
                 do
                 {
                     Console.WriteLine("Please select a background from:");
-                    for (int i = 0; i < backgrounds.Count; i++)
+                    foreach (Background background in backgrounds)
                     {
-                        Console.WriteLine("{0}: HP:{1} EN:{2} MI:{3} FI:{4} AS:{5} AG:{6} TO:{7} AC:{8} EM:{9} CO:{10} {11}", backgrounds[i].Name, backgrounds[i].Health, backgrounds[i].Energy, backgrounds[i].Might, backgrounds[i].Finesse, backgrounds[i].Astra, backgrounds[i].Agility, backgrounds[i].Toughness, backgrounds[i].Acuity, backgrounds[i].Empathy, backgrounds[i].Contempt, backgrounds[i].Description);
+                        Console.WriteLine("{0}: HP:{1} EN:{2} MI:{3} FI:{4} AS:{5} AG:{6} TO:{7} AC:{8} EM:{9} CO:{10} {11}", background.Name, background.Health, background.Energy, background.Might, background.Finesse, background.Astra, background.Agility, background.Toughness, background.Acuity, background.Empathy, background.Contempt, background.Description);
                     }
                     Console.Write(" > ");
-                    background = Console.ReadLine();
+                    backgroundIn = Console.ReadLine();
                     String[] backgroundNames = new String[backgrounds.Count];
                     for (int i = 0; i < backgrounds.Count; i++)
                     {
                         backgroundNames[i] = backgrounds[i].Name;
                     }
-                    if (backgroundNames.Contains(background))
+                    if (backgroundNames.Contains(backgroundIn))
                     {
                         backgroundIsValid = true;
                     }
@@ -180,26 +233,26 @@ namespace Ollara
                         Console.WriteLine("Please select a valid option.");
                     }
                 } while (!backgroundIsValid);
-                for (int i = 0; i < races.Count; i++)
+                foreach (Race race in races)
                 {
-                    if (race.CompareTo(races[i].Name) == 0)
+                    if (raceIn.CompareTo(race.Name) == 0)
                     {
-                        newRace = races[i];
+                        newRace = race;
                     }
                 }
-                for (int i = 0; i < backgrounds.Count; i++)
+                foreach (Background background in backgrounds)
                 {
-                    if (background.CompareTo(backgrounds[i].Name) == 0)
+                    if (backgroundIn.CompareTo(background.Name) == 0)
                     {
-                        newBackground = backgrounds[i];
+                        newBackground = background;
                     }
                 }
-                party.AddMember(new Character(name, newRace, newBackground));
+                party.AddMember(new Character(nameIn, newRace, newBackground));
                 characterCount++;
-                Console.WriteLine("You created {0}, a {1} {2}.", name, newRace.Denonym, newBackground.Name);
-                race = null;
+                Console.WriteLine("You created {0}, a/n {1} {2}.", nameIn, newRace.Denonym, newBackground.Name);
+                raceIn = null;
                 newRace = blankRace;
-                background = null;
+                backgroundIn = null;
                 newBackground = blankBackground;
                 raceIsValid = false;
                 backgroundIsValid = false;
@@ -224,17 +277,45 @@ namespace Ollara
                         }
                     } while (!finishedIsValid);
                 }
+                else
+                {
+                    finished = true;
+                }
             } while (!finished);
             Console.WriteLine("This is your party:");
-            for (int i = 0; i < party.PartySize; i++)
+            foreach (Character member in party.PartyMembers)
             {
-                Console.WriteLine("{0}, a {1} {2}.", party.PartyMembers[i].Name, party.PartyMembers[i].Race.Denonym, party.PartyMembers[i].Background.Name);
+                Console.WriteLine("{0}, a {1} {2}.", member.Name, member.Race.Denonym, member.Background.Name);
             }
         }
 
+        /// <summary>
+        /// Randomly distributes some Perks from the static Perk List into a pool the player can select from and apply to their characters.
+        /// </summary>
+        static void PerkPoolDistributor()
+        {
+            List<Perk> perks = new List<Perk>();
+            foreach (Ability ability in abilities)
+            {
+                perks.Add(ability);
+            }
+            foreach (Passive passive in passives)
+            {
+                perks.Add(passive);
+            }
+            foreach (StatBoost statBoost in statBoosts)
+            {
+                perks.Add(statBoost);
+            }
+            
+        }
+
+        /// <summary>
+        /// Plays the actual Game.
+        /// </summary>
         static void Game()
         {
-
+            
         }
     }
 }

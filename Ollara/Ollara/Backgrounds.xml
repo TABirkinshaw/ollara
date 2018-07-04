@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<Backgrounds>
-  <Background name="Adventurer" health="10" energy="10" might="2" finesse="3" astra="2" agility="3" toughness="2" acuity="2" empathy="2" contempt="2" description="Basic adventurer"/>
-  <Background name="Soldier" health="15" energy="5" might="3" finesse="1" astra="1" agility="1" toughness="3" acuity="1" empathy="2" contempt="2" description="Basic soldier"/>
-  <Background name="Mage" health="5" energy="15" might="1" finesse="1" astra="3" agility="2" toughness="1" acuity="3" empathy="2" contempt="2" description="Basic mage"/>
-</Backgrounds>
