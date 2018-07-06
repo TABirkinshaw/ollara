@@ -16,6 +16,8 @@ namespace Ollara
         static List<Passive> passives = new List<Passive>();
         static List<StatBoost> statBoosts = new List<StatBoost>();
 
+        static Random rand = new Random();
+
         static void Main(string[] args)
         {
             Preload();
@@ -294,20 +296,31 @@ namespace Ollara
         /// </summary>
         static void PerkPoolDistributor()
         {
-            List<Perk> perks = new List<Perk>();
-            foreach (Ability ability in abilities)
+            List<Perk> randPerks = new List<Perk>();
+
+            // For now this just fills the list with random perks, but will be optimised and made better later
+            int perkCount = 10;
+            int randNum;
+            for (int i = 0; i < perkCount; i++)
             {
-                perks.Add(ability);
+                randNum = rand.Next(1, 4);
+                switch (randNum)
+                {
+                    case 1:
+                        randPerks.Add(abilities[rand.Next(0, abilities.Count)]);
+                        break;
+                    case 2:
+                        randPerks.Add(passives[rand.Next(0, passives.Count)]);
+                        break;
+                    case 3:
+                        randPerks.Add(statBoosts[rand.Next(0, statBoosts.Count)]);
+                        break;
+                }
             }
-            foreach (Passive passive in passives)
+            foreach (Perk perk in randPerks)
             {
-                perks.Add(passive);
+                Console.WriteLine(perk.Name);
             }
-            foreach (StatBoost statBoost in statBoosts)
-            {
-                perks.Add(statBoost);
-            }
-            
         }
 
         /// <summary>
@@ -316,6 +329,14 @@ namespace Ollara
         static void Game()
         {
             
+        }
+
+        /// <summary>
+        /// Plays out a Battle.
+        /// </summary>
+        static void Battle()
+        {
+
         }
     }
 }
