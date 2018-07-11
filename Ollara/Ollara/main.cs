@@ -112,17 +112,17 @@ namespace Ollara
                 Console.WriteLine("[3]  Past Games");
                 Console.WriteLine("[X]  Exit");
 
-                Console.Write(" > ");
+                Console.Write("Please choose an option  > ");
                 String input = Console.ReadLine();
                 switch (input)
                 {
                     case "1":
                         Console.WriteLine("Starting new game!");
-                        PlayGame();
+                        PreGame();
                         break;
                     case "2":
                         Console.WriteLine("Continuing current game!");
-                        PlayGame("savefile.txt");
+                        PreGame("savefile.txt");
                         break;
                     case "3":
                         Console.WriteLine("Printing past game records.");
@@ -144,7 +144,7 @@ namespace Ollara
         /// Initialises (or loads) the game state and starts character generation before starting the Game.
         /// </summary>
         /// <param name="entry">An optional parameter that can take a save file if loading gets implemented.</param>
-        static void PlayGame(String entry = "")
+        static void PreGame(String entry = "")
         {
             if (entry.CompareTo("") == 0)
             {
@@ -321,6 +321,8 @@ namespace Ollara
             {
                 Console.WriteLine(perk.Name);
             }
+            // Perks will also be applied to characters here
+
         }
 
         /// <summary>
@@ -328,7 +330,66 @@ namespace Ollara
         /// </summary>
         static void Game()
         {
-            
+            Console.WriteLine("Your party appears in a dungeon.");
+            bool gameOver = false;
+            Room room;
+            String input;
+            do
+            {
+                Console.WriteLine("You enter a room.");
+                room = CreateRoom();
+                Console.WriteLine("[1] To the left is {0}.", room.LeftPortal);
+                Console.WriteLine("[2] In the middle is {0}.", room.MiddlePortal);
+                Console.WriteLine("[3] To the right is {0}.", room.RightPortal);
+                Console.WriteLine("[X] Exit.");
+                Console.Write("Where do you want to go?  > ");
+                input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        PortalHandler(room.LeftPortal);
+                        break;
+                    case "2":
+                        PortalHandler(room.MiddlePortal);
+                        break;
+                    case "3":
+                        PortalHandler(room.RightPortal);
+                        break;
+                    case "X":
+                        gameOver = true;
+                        break;
+                    case "x":
+                        gameOver = true;
+                        break;
+                    default:
+                        Console.WriteLine("Incorrect input");
+                        break;
+                }
+            } while (!gameOver);
+        }
+
+        /// <summary>
+        /// Creates a Room with four sides that have random events at them.
+        /// </summary>
+        /// <returns>A new Room object.</returns>
+        static Room CreateRoom()
+        {
+            Array values = Enum.GetValues(typeof(Portal));
+
+            Portal leftPortal = (Portal)values.GetValue(rand.Next(values.Length));
+            Portal middlePortal = (Portal)values.GetValue(rand.Next(values.Length));
+            Portal rightPortal = (Portal)values.GetValue(rand.Next(values.Length));
+            Room newRoom = new Room(leftPortal, middlePortal, rightPortal);
+
+            return newRoom;
+        }
+
+        /// <summary>
+        /// Handles player interaction with the specified Portal.
+        /// </summary>
+        static void PortalHandler(Portal portal)
+        {
+
         }
 
         /// <summary>
