@@ -6,11 +6,29 @@ namespace Ollara
 {
     class Character : BaseUnit
     {
+        Random rand = new Random();
+
         public Character(String name, Race race, Background background)
         {
             this.name = name;
             this.race = race;
             this.background = background;
+
+            this.maximumHealth += (rand.Next(10, 16) + race.Health + background.Health);
+            this.maximumEnergy += (rand.Next(5, 11) + race.Energy + background.Energy);
+            this.might += (rand.Next(2, 6) + race.Might + background.Might);
+            this.finesse += (rand.Next(2, 6) + race.Finesse + background.Finesse);
+            this.astra += (rand.Next(2, 6) + race.Astra + background.Astra);
+            this.agility += (rand.Next(2, 6) + race.Agility + background.Agility);
+            this.toughness += (rand.Next(2, 6) + race.Toughness + background.Toughness);
+            this.acuity += (rand.Next(2, 6) + race.Acuity + background.Acuity);
+            this.empathy += (rand.Next(2, 6) + race.Empathy + background.Empathy);
+            this.contempt += (rand.Next(2, 6) + race.Contempt + background.Contempt);
+            this.luck = rand.Next(-100, 100);
+            this.panic = 0;
+
+            this.currentHealth = this.maximumHealth;
+            this.currentEnergy = this.maximumEnergy;
         }
 
         private Background background;
@@ -29,16 +47,28 @@ namespace Ollara
         public override String Name { get { return name; } }
         public override Race Race { get { return race; } }
 
-        public override float Health
+        public override float MaximumHealth
         {
-            get { return health; }
-            set { health = value; }
+            get { return maximumHealth; }
+            set { maximumHealth = value; }
         }
 
-        public override float Energy
+        public override float CurrentHealth
         {
-            get { return energy; }
-            set { energy = value; }
+            get { return currentHealth; }
+            set { currentHealth = value; }
+        }        
+
+        public override float MaximumEnergy
+        {
+            get { return maximumEnergy; }
+            set { maximumEnergy = value; }
+        }
+
+        public override float CurrentEnergy
+        {
+            get { return currentEnergy; }
+            set { currentEnergy = value; }
         }
 
         public override float Luck

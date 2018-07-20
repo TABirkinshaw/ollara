@@ -4,12 +4,10 @@ using System.Text;
 
 namespace Ollara
 {
-    abstract class Perk
+    abstract class Perk : Treasure
     {
-        protected String name;
         protected String description;
 
-        public abstract String Name { get; }
         public abstract String Description { get; }
     }
 }

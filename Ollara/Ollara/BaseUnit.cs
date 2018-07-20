@@ -8,8 +8,10 @@ namespace Ollara
     {
         protected String name;
         protected Race race;
-        protected float health;
-        protected float energy;
+        protected float maximumHealth;
+        protected float currentHealth;
+        protected float maximumEnergy;
+        protected float currentEnergy;
         protected float luck;
         protected float panic;
         protected Weapon weapon;
@@ -17,8 +19,10 @@ namespace Ollara
 
         public abstract String Name { get; }
         public abstract Race Race { get; }
-        public abstract float Health { get; set; }
-        public abstract float Energy { get; set; }
+        public abstract float CurrentHealth { get; set; }
+        public abstract float MaximumHealth { get; set; }
+        public abstract float MaximumEnergy { get; set; }
+        public abstract float CurrentEnergy {get; set; }
         public abstract float Luck { get; set; }
         public abstract float Panic { get; set; }
         public abstract Weapon Weapon { get; set; }

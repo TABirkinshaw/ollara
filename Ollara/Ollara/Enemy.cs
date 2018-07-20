@@ -33,16 +33,28 @@ namespace Ollara
             get { return race; }
         }
 
-        public override float Health
+        public override float MaximumHealth
         {
-            get { return health; }
-            set { health = value; }
+            get { return maximumHealth; }
+            set { maximumHealth = value; }
         }
 
-        public override float Energy
+        public override float CurrentHealth
         {
-            get { return energy; }
-            set { energy = value; }
+            get { return currentHealth; }
+            set { currentHealth = value; }
+        }
+
+        public override float MaximumEnergy
+        {
+            get { return maximumEnergy; }
+            set { maximumEnergy = value; }
+        }
+
+        public override float CurrentEnergy
+        {
+            get { return currentEnergy; }
+            set { currentEnergy = value; }
         }
 
         public override float Luck

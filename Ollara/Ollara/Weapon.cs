@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ollara
 {
-    class Weapon
+    class Weapon : Treasure
     {
         public Weapon(String name, WeaponType type, float damage, float accuracy, float criticalChance)
         {
@@ -15,13 +15,12 @@ namespace Ollara
             this.criticalChance = criticalChance;
         }
 
-        private String name;
         private float damage;
         private float accuracy;
         private float criticalChance;
         private WeaponType type;
 
-        public String Name { get { return name; } }
+        public override String Name { get { return name; } }
         public float Damage { get { return damage; } }
         public float Accuracy { get { return accuracy; } }
         public float CriticalChance { get { return criticalChance; } }

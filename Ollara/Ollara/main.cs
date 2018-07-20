@@ -15,6 +15,7 @@ namespace Ollara
         static List<Ability> abilities = new List<Ability>();
         static List<Passive> passives = new List<Passive>();
         static List<StatBoost> statBoosts = new List<StatBoost>();
+        static List<Treasure> inventory = new List<Treasure>();
 
         static Random rand = new Random();
 
@@ -347,13 +348,13 @@ namespace Ollara
                 switch (input)
                 {
                     case "1":
-                        PortalHandler(room.LeftPortal);
+                        gameOver = PortalHandler(room.LeftPortal);
                         break;
                     case "2":
-                        PortalHandler(room.MiddlePortal);
+                        gameOver = PortalHandler(room.MiddlePortal);
                         break;
                     case "3":
-                        PortalHandler(room.RightPortal);
+                        gameOver = PortalHandler(room.RightPortal);
                         break;
                     case "X":
                         gameOver = true;
@@ -387,17 +388,66 @@ namespace Ollara
         /// <summary>
         /// Handles player interaction with the specified Portal.
         /// </summary>
-        static void PortalHandler(Portal portal)
+        static bool PortalHandler(Portal portal)
         {
+            Console.WriteLine("You selected the {0} portal", portal);
+            bool gameOver = false;
+            switch (portal)
+            {
+                case Portal.Treasure:
+                    inventory.Add(TreasureHandler());
+                    Console.WriteLine("Current treasure:");
+                    foreach (Treasure item in inventory)
+                    {
+                        Console.WriteLine(item.Name);
+                    }
+                    break;
+                case Portal.Battle:
+                    gameOver = BattleHandler();
+                    break;
+                case Portal.Healing:
+                    HealingPortalHandler();
+                    break;
+                case Portal.Empty:
+                    Console.WriteLine("You step through an empty portal.");
+                    break;
+            }
+            return gameOver;
+        }
 
+        /// <summary>
+        /// Assigns random loot.
+        /// </summary>
+        /// <returns></returns>
+        static Treasure TreasureHandler()
+        {
+            int treasureNum = inventory.Count;
+            Treasure treasure = new Weapon(treasureNum.ToString(), WeaponType.Sword, 0, 0, 0);
+
+            return treasure;
         }
 
         /// <summary>
         /// Plays out a Battle.
         /// </summary>
-        static void Battle()
+        static bool BattleHandler()
         {
+            bool gameOver = false;
+            return gameOver;
+        }
 
+        static void HealingPortalHandler()
+        {
+            foreach (Character member in party.PartyMembers)
+            {
+                float oldHealth = member.CurrentHealth;
+                member.CurrentHealth = member.MaximumHealth * 1.2f;
+                if (member.CurrentHealth > member.MaximumHealth)
+                {
+                    member.CurrentHealth = member.MaximumHealth;
+                }
+                Console.WriteLine("{0} was healed from {1}/{2} HP to {3}/{4} HP.", member.Name, oldHealth, member.MaximumHealth, member.CurrentHealth, member.MaximumHealth);
+            }
         }
     }
 }
